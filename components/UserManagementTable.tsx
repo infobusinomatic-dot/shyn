@@ -1,6 +1,4 @@
 
-
-
 import React, { useState, useMemo, useEffect } from 'react';
 import type { User, UserStatus } from '../types';
 // import { deleteUser } from '../services/userService'; // This logic is now handled by parent component/API call
@@ -14,7 +12,8 @@ interface UserManagementTableProps {
 
 type SortKey = keyof User;
 
-const UserManagementTable: React.FC<UserManagementTableProps> = ({ initialUsers, onUsersChange }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const UserManagementTable = ({ initialUsers, onUsersChange }: UserManagementTableProps) => {
     const [users, setUsers] = useState(initialUsers);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<{ key: SortKey; direction: 'ascending' | 'descending' } | null>(null);

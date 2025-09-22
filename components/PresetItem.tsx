@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 import type { AppearancePreset } from '../types';
@@ -13,7 +14,8 @@ interface PresetItemProps {
     onDelete: (id: number) => void;
 }
 
-const PresetItem: React.FC<PresetItemProps> = ({ preset, isLoaded, isDisabled, onLoad, onEdit, onDelete }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const PresetItem = ({ preset, isLoaded, isDisabled, onLoad, onEdit, onDelete }: PresetItemProps) => {
     return (
         <div className={`flex items-center gap-2 p-2 bg-base-800 rounded-lg hover:bg-base-700/50 transition-all duration-200 ${isLoaded ? 'ring-2 ring-primary/80' : 'ring-0'}`}>
             <img src={preset.imageUrl} className="w-10 h-10 rounded-md object-cover flex-shrink-0 bg-base-900" alt={preset.name} />

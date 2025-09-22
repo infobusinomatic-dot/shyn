@@ -1,5 +1,4 @@
 
-
 import React, { useState, useEffect } from 'react';
 import type { ActivityLogEntry } from '../types';
 // import { getActivityLog } from '../services/activityService'; // Removed mock service
@@ -16,7 +15,8 @@ import { SoundOffIcon } from './icons/SoundOffIcon';
 import { motion } from 'framer-motion';
 
 
-const ActivityLog: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const ActivityLog = () => {
     // const [logs, setLogs] = useState<ActivityLogEntry[]>([]);
 
     // useEffect(() => {
@@ -57,7 +57,8 @@ const itemVariants = {
   },
 };
 
-const Settings: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const Settings = () => {
     const { isAmbientSoundEnabled, toggleAmbientSound } = useSettings();
 
     return (

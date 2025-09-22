@@ -1,5 +1,7 @@
+
 import React, { useRef, useState, useEffect } from 'react';
-import { motion, Variants } from 'framer-motion';
+// FIX: Changed import for Variants to be a type import to resolve module export error.
+import { motion, type Variants } from 'framer-motion';
 
 import type { Mood, AppearanceName, AvatarCustomization } from '../types';
 import { useNotifications } from '../contexts/NotificationContext';
@@ -39,7 +41,7 @@ type ActionName = 'Wave' | 'Think' | 'Smile';
 const manualActions: ActionName[] = ['Wave', 'Think', 'Smile'];
 const appearanceOptions: AppearanceName[] = ['Default', 'Cyberpunk', 'Fantasy', 'Gothic', 'Anime'];
 
-const containerVariants = {
+const containerVariants: Variants = {
   hidden: { opacity: 1 },
   visible: { opacity: 1, transition: { staggerChildren: 0.07 } },
 };
@@ -49,7 +51,8 @@ const itemVariants: Variants = {
   visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } },
 };
 
-const AiProfile: React.FC<AiProfileProps> = ({ currentMood, onMoodChange, affectionLevel, onAvatarUpdate }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const AiProfile = ({ currentMood, onMoodChange, affectionLevel, onAvatarUpdate }: AiProfileProps) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const prevMood = useRef<Mood>(currentMood);
     
@@ -73,7 +76,7 @@ const AiProfile: React.FC<AiProfileProps> = ({ currentMood, onMoodChange, affect
             onAvatarUpdate(null);
             try {
                 const base64Image = await generateAvatar(currentMood, appearance, customization);
-                const fullUrl = `data:image/png;base64,${base64Image}`;
+                const fullUrl = `data:image/jpeg;base64,${base64Image}`;
                 setAvatarImageUrl(fullUrl);
                 onAvatarUpdate(fullUrl);
             } catch (error) {

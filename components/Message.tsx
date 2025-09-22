@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 
@@ -16,7 +17,8 @@ interface MessageProps {
     avatarUrl?: string;
 }
 
-const Message: React.FC<MessageProps> = ({ sender, text, attachment, avatarUrl }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const Message = ({ sender, text, attachment, avatarUrl }: MessageProps) => {
     const isAI = sender === MessageSender.AI;
     const isImage = attachment?.type.startsWith('image/');
 

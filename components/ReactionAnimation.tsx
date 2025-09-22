@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import type { ReactionType } from '../types';
@@ -8,7 +9,8 @@ interface ReactionAnimationProps {
     onComplete: () => void;
 }
 
-const ReactionAnimation: React.FC<ReactionAnimationProps> = ({ reaction, onComplete }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const ReactionAnimation = ({ reaction, onComplete }: ReactionAnimationProps) => {
     
     useEffect(() => {
         let timer: number;

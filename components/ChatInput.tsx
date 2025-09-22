@@ -12,7 +12,8 @@ interface ChatInputProps {
     isLoading: boolean;
 }
 
-const ChatInput: React.FC<ChatInputProps> = ({ onSendMessage, isLoading }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const ChatInput = ({ onSendMessage, isLoading }: ChatInputProps) => {
     const [input, setInput] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { addNotification } = useNotifications();

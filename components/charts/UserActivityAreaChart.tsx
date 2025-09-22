@@ -16,7 +16,8 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const UserActivityAreaChart: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const UserActivityAreaChart = () => {
     const [data, setData] = useState<AnalyticsDataPoint[]>([]);
     const [loading, setLoading] = useState(true);
 

@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import type { User } from '../types';
 import { getStatusStyles } from '../utils/statusUtils';
@@ -27,7 +26,8 @@ const itemVariants = {
     },
 };
 
-const UserProfile: React.FC<UserProfileProps> = ({ user }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const UserProfile = ({ user }: UserProfileProps) => {
     const [name, setName] = useState(user.name);
     const [email, setEmail] = useState(user.email);
     const [isEditing, setIsEditing] = useState(false);

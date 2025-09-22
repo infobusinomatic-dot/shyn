@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 
 import type { Page, User } from '../types';
@@ -15,7 +16,8 @@ interface HeaderProps {
     currentPage: Page;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, onNavigate, currentPage }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const Header = ({ user, onNavigate, currentPage }: HeaderProps) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { dotClassName } = getStatusStyles(user.status);

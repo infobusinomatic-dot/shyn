@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import type { Chat } from '@google/genai';
 import { motion } from 'framer-motion';
@@ -38,7 +39,8 @@ const itemVariants = {
   },
 };
 
-const ChatView: React.FC<ChatViewProps> = ({ user, onAvatarUpdate }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const ChatView = ({ user, onAvatarUpdate }: ChatViewProps) => {
     const [currentMood, setCurrentMood] = useState<Mood>('Cheerful');
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [chat, setChat] = useState<Chat | null>(null);

@@ -23,7 +23,8 @@ const colorClasses = {
     }
 }
 
-const StatCard: React.FC<StatCardProps> = ({ icon: Icon, title, value, color }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const StatCard = ({ icon: Icon, title, value, color }: StatCardProps) => {
     const classes = colorClasses[color];
 
     return (

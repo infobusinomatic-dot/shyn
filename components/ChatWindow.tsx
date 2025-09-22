@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -24,7 +25,8 @@ interface ChatWindowProps {
     initialMessage: string;
 }
 
-const TypingIndicator: React.FC = () => (
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const TypingIndicator = () => (
     <div className="flex items-end space-x-1.5 py-3 px-4">
         <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]"></div>
         <div className="w-2 h-2 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]"></div>
@@ -32,7 +34,8 @@ const TypingIndicator: React.FC = () => (
     </div>
 );
 
-const CallUI: React.FC<{ onHangUp: () => void; avatarUrl: string }> = ({ onHangUp, avatarUrl }) => (
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const CallUI = ({ onHangUp, avatarUrl }: { onHangUp: () => void; avatarUrl: string }) => (
     <div className="absolute inset-0 bg-base-950/90 backdrop-blur-xl z-50 flex flex-col items-center justify-center animate-fade-in">
         <div className="relative mb-8 w-40 h-40 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center p-2">
             <div className="w-full h-full bg-base-950 rounded-full flex items-center justify-center overflow-hidden">
@@ -55,7 +58,8 @@ const CallUI: React.FC<{ onHangUp: () => void; avatarUrl: string }> = ({ onHangU
     </div>
 );
 
-const ChatWindow: React.FC<ChatWindowProps> = ({ messages, isLoading, onSendMessage, error, currentMood, avatarUrl, activeReaction, onReactionComplete, initialMessage }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const ChatWindow = ({ messages, isLoading, onSendMessage, error, currentMood, avatarUrl, activeReaction, onReactionComplete, initialMessage }: ChatWindowProps) => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [isCalling, setIsCalling] = useState(false);
     

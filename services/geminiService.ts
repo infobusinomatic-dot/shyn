@@ -1,4 +1,5 @@
-import { GoogleGenAI, Chat, Part, Content, Type } from "@google/genai";
+
+import { GoogleGenAI, Chat, Part, Content, Type, GenerateContentResponse } from "@google/genai";
 import type { Mood, Attachment, User, ChatMessage, AppearanceName, AvatarCustomization, Memory, ReactionType } from '../types';
 import { MessageSender } from "../types";
 
@@ -178,8 +179,9 @@ export const sendMessageToAI = async (
         content = message;
     }
 
-    const result = await chat.sendMessage({ message: content });
+    const result: GenerateContentResponse = await chat.sendMessage({ message: content });
     
+    // FIX: The response object from chat.sendMessage has a `.text` property, not a `.text()` method.
     let responseText = result.text;
     let reaction: ReactionType | undefined = undefined;
 
@@ -231,7 +233,7 @@ Format your response as a JSON array of objects. Each object must have a "topic"
 
 If no new, significant core memories about the user are mentioned, return an empty array: [].`;
 
-        const response = await genAI.models.generateContent({
+        const response: GenerateContentResponse = await genAI.models.generateContent({
             model: "gemini-2.5-flash",
             contents: prompt,
             config: {
@@ -249,6 +251,7 @@ If no new, significant core memories about the user are mentioned, return an emp
             },
         });
         
+        // FIX: The response object from generateContent has a `.text` property, not a `.text()` method.
         const jsonText = response.text.trim();
         const parsed = JSON.parse(jsonText);
 
@@ -328,35 +331,91 @@ const getAvatarGenerationPrompt = (mood: Mood, appearance: AppearanceName, custo
     return promptParts.join(' ');
 }
 
+const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            if (typeof reader.result === 'string') {
+                const base64String = reader.result.split(',')[1];
+                resolve(base64String);
+            } else {
+                reject(new Error("Failed to convert blob to base64 string."));
+            }
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+};
+
 export const generateAvatar = async (
     mood: Mood,
     appearance: AppearanceName,
     customization: AvatarCustomization
 ): Promise<string> => {
     try {
-        const genAI = getAi();
-        const prompt = getAvatarGenerationPrompt(mood, appearance, customization);
-
-        const response = await genAI.models.generateImages({
-            model: 'imagen-4.0-generate-001',
-            prompt: prompt,
-            config: {
-              numberOfImages: 1,
-              outputMimeType: 'image/jpeg',
-              aspectRatio: '3:4',
-            },
-        });
-
-        if (response.generatedImages && response.generatedImages.length > 0 && response.generatedImages[0].image?.imageBytes) {
-            return response.generatedImages[0].image.imageBytes;
+        const hfToken = process.env.HF_TOKEN;
+        if (!hfToken) {
+            throw new Error("HF_TOKEN environment variable not set. Please add it to use the Hugging Face image generation feature.");
         }
 
-        throw new Error("Image generation failed, no image was returned from the API.");
+        const prompt = getAvatarGenerationPrompt(mood, appearance, customization);
+        const modelUrl = 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0';
+        
+        const response = await fetch(modelUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${hfToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                inputs: prompt,
+                parameters: {
+                    negative_prompt: "blurry, ugly, deformed, noisy, text, watermark, logo, extra limbs, poorly drawn",
+                    // The original aspect ratio was 3:4. For SDXL, good dimensions would be 768x1024.
+                    width: 768,
+                    height: 1024,
+                },
+                options: {
+                    wait_for_model: true // Handle cold starts on the HF side
+                }
+            })
+        });
+
+        if (!response.ok) {
+            const errorBodyText = await response.text();
+            let errorDetail = "Unknown error from Hugging Face API.";
+            try {
+                const errorBodyJson = JSON.parse(errorBodyText);
+                errorDetail = errorBodyJson.error || response.statusText;
+                if(errorBodyJson.estimated_time) {
+                    errorDetail += ` The model is loading, please try again in a moment. (Est: ${Math.round(errorBodyJson.estimated_time)}s)`;
+                }
+            } catch (e) {
+                // If parsing fails, use the raw text
+                errorDetail = errorBodyText || response.statusText;
+            }
+            console.error("Hugging Face API error:", errorDetail);
+            throw new Error(`Image generation failed: ${errorDetail}`);
+        }
+
+        const imageBlob = await response.blob();
+        
+        if (imageBlob.type.startsWith('image/')) {
+            return await blobToBase64(imageBlob);
+        }
+
+        throw new Error("Image generation failed, the API did not return a valid image.");
 
     } catch (error) {
-        console.error("Error generating avatar:", error);
-         if (error instanceof Error && error.message.includes("API_KEY")) {
-            throw new Error("I'm having trouble with my image generation service due to a configuration issue.");
+        console.error("Error generating avatar with Hugging Face:", error);
+        if (error instanceof Error) {
+            if (error.message.includes("HF_TOKEN")) {
+                throw new Error("I'm having trouble with my image generation service due to a configuration issue.");
+            }
+            if (error.message.includes('loading')) {
+                 throw new Error("The image generator is warming up. Please try again in a minute!");
+            }
+             throw new Error(error.message);
         }
         throw new Error("I'm having trouble creating a new look. Please try again in a moment.");
     }

@@ -1,5 +1,4 @@
 
-
 import React from 'react';
 
 interface FeatureCardProps {
@@ -8,7 +7,8 @@ interface FeatureCardProps {
     icon?: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon: Icon }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const FeatureCard = ({ title, description, icon: Icon }: FeatureCardProps) => {
     return (
         <div className="p-4 bg-base-800/50 border border-base-700/50 rounded-xl">
              {Icon ? (

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useMemo } from 'react';
 import type { User } from '../types';
 import { getUsers, getAdminStats } from '../services/apiService';
@@ -28,7 +29,8 @@ const itemVariants = {
   },
 };
 
-const AdminDashboard: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const AdminDashboard = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [stats, setStats] = useState({ total: 0, active: 0, admins: 0 });
     const [loading, setLoading] = useState(true);
@@ -94,7 +96,6 @@ const AdminDashboard: React.FC = () => {
                 animate="visible"
                 className="space-y-6"
             >
-                {/* FIX: Corrected a typo in the closing tag from </motion.div.div> to </motion.div> */}
                 <motion.div variants={itemVariants} className="flex items-center gap-3">
                     <div className="w-8 h-8 flex items-center justify-center bg-primary/20 rounded-lg">
                        <UsersIcon className="w-5 h-5 text-primary"/>

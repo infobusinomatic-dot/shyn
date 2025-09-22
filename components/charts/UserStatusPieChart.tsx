@@ -38,7 +38,8 @@ const CustomTooltip = ({ active, payload }: any) => {
 };
 
 
-const UserStatusPieChart: React.FC<UserStatusPieChartProps> = ({ users }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const UserStatusPieChart = ({ users }: UserStatusPieChartProps) => {
     const data = useMemo(() => {
         const statusCounts = users.reduce((acc, user) => {
             acc[user.status] = (acc[user.status] || 0) + 1;

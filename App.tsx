@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,7 +16,8 @@ import AdminDashboard from './components/AdminDashboard';
 import NotificationToast from './components/NotificationToast';
 import LoadingIndicator from './components/LoadingIndicator';
 
-const AppContent: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const AppContent = () => {
     const [currentPage, setCurrentPage] = useState<Page>('Chat');
     const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -100,7 +102,8 @@ const AppContent: React.FC = () => {
     );
 };
 
-const App: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const App = () => {
     return (
         <NotificationProvider>
             <SettingsProvider>

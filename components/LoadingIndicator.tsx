@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { motion } from 'framer-motion';
 import { HeartIcon } from './icons/HeartIcon';
@@ -6,7 +7,8 @@ interface LoadingIndicatorProps {
     message: string;
 }
 
-const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({ message }) => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts with framer-motion props.
+const LoadingIndicator = ({ message }: LoadingIndicatorProps) => {
     return (
         <div className="flex flex-col items-center justify-center h-full text-lg text-base-300 gap-4">
             <motion.div

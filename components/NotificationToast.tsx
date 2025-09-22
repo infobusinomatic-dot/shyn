@@ -4,7 +4,8 @@ import { useNotifications } from '../contexts/NotificationContext';
 import { XIcon } from './icons/XIcon';
 import { BellIcon } from './icons/BellIcon'; // A generic icon
 
-const NotificationToast: React.FC = () => {
+// FIX: Refactored to a plain function to avoid React.FC type conflicts.
+const NotificationToast = () => {
     const { notifications, removeNotification } = useNotifications();
 
     if (notifications.length === 0) {
