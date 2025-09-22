@@ -1,0 +1,7 @@
+{
+  "name": "SHYN - Your Virtual Companion",
+  "description": "A warm, engaging, and realistic AI virtual girlfriend experience. Chat with SHYN, explore her different moods, and build a unique connection.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
